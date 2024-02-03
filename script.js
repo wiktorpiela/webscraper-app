@@ -5,24 +5,44 @@ let myArray = [];
 // functions ---------------------------------
 function validateFileExtension(filename) {
     ext = filename.split('.').pop();
-    if (ext == 'csv'){
+    if (ext == 'csv') {
         return true
     } else {
         return false
     }
 }
 
-function getHeaderIndex(csvHeader, headerName){
-    let headerIdx=undefined;
-    for(let i=0; i<csvHeader.length; i++){
+function getHeaderIndex(csvHeader, headerName) {
+    let headerIdx = undefined;
+    for (let i = 0; i < csvHeader.length; i++) {
         headerItem = csvHeader[i].replace(/['"]+/g, '').trim()
-        if(headerItem===headerName){
+        if (headerItem === headerName) {
             headerIdx = i;
             break
         }
     }
     return headerIdx
 }
+
+function handleReceivedData(inputData) {
+    const header = Object.keys(inputData).toString();
+    const original = inputData.original;
+    const modified = inputData.modified;
+
+    let dataText = []
+
+    for(i=0; i < modified.length; i++){
+        line = `${modified[i]},${original[i]}`
+        dataText.push(line)
+    }
+
+    dataText = dataText.join('\n')
+
+    const csv = [header, dataText].join('\n');
+    // console.log(csv);
+}
+
+
 
 const postLinks = async (url, arr) => {
     const response = await fetch(url, {
@@ -31,24 +51,14 @@ const postLinks = async (url, arr) => {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({links: arr})
+        body: JSON.stringify({ links: arr })
     });
 
     response.json()
-        .then(data => {
-        console.log(data)
-    });
+        .then(data => handleReceivedData(data));
 }
 
-function jsonToCSV(obj) {
-    const array = [Object.keys(obj[0])].concat(obj)
-  
-    return array.map(it => {
-      return Object.values(it).toString()
-    }).join('\n')
-  }
-
-fileInput.addEventListener('change', ()=>{
+fileInput.addEventListener('change', () => {
 
     const myFile = fileInput.files[0];
     const reader = new FileReader()
@@ -61,13 +71,13 @@ fileInput.addEventListener('change', ()=>{
         let rowdata = csvdata.split('\n')
         let headIdx = getHeaderIndex(rowdata[0].split(','), "data")
 
-        for(let i=1; i< rowdata.length-1; i++){
+        for (let i = 1; i < rowdata.length - 1; i++) {
             let row = rowdata[i].split(',')[headIdx]
             myArray.push(row)
         }
 
         // remove whitespaces in case if needed
-        myArray.forEach((item, index, arr)=>{
+        myArray.forEach((item, index, arr) => {
             arr[index] = item.trim()
         })
 
