@@ -39,7 +39,25 @@ function handleReceivedData(inputData) {
     dataText = dataText.join('\n')
 
     const csv = [header, dataText].join('\n');
+    startCSVDownload(csv)
     // console.log(csv);
+}
+
+function startCSVDownload(input){
+    const blob = new Blob([input], {type: 'application/csv'});
+    const url = URL.createObjectURL(blob);
+
+    const getFile = document.createElement('a');
+    getFile.download = 'test-output.csv';
+    getFile.href = url;
+    getFile.style.display = 'none';
+
+    document.body.appendChild(getFile);
+
+    getFile.click();
+
+    getFile.remove();
+    URL.revokeObjectURL(url);
 }
 
 
