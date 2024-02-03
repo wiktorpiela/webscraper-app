@@ -1,4 +1,5 @@
 const fileInput = document.querySelector(".file-input");
+const requestUrl = 'http://127.0.0.1:5000/scraper'
 let myArray = [];
 
 // functions ---------------------------------
@@ -23,7 +24,7 @@ function getHeaderIndex(csvHeader, headerName){
     return headerIdx
 }
 
-const sendLinks = async (url, arr) => {
+const postLinks = async (url, arr) => {
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -33,10 +34,19 @@ const sendLinks = async (url, arr) => {
         body: JSON.stringify({links: arr})
     });
 
-    response.json().then(data => {
-        console.log('request sent!')
+    response.json()
+        .then(data => {
+        console.log(data)
     });
 }
+
+function jsonToCSV(obj) {
+    const array = [Object.keys(obj[0])].concat(obj)
+  
+    return array.map(it => {
+      return Object.values(it).toString()
+    }).join('\n')
+  }
 
 fileInput.addEventListener('change', ()=>{
 
@@ -61,7 +71,7 @@ fileInput.addEventListener('change', ()=>{
             arr[index] = item.trim()
         })
 
-        
+        postLinks(requestUrl, myArray)
     }
 
 })

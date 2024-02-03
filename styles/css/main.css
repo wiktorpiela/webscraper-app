@@ -14,3 +14,33 @@ html, body {
     max-width: 1140px;
     margin: 0 auto;
 }
+
+nav{
+    display: flex;
+    background-color: #0275d8;
+    align-items: center;
+    font-size: 2.5rem;
+    justify-content: space-around;
+    text-transform: uppercase;
+    padding: 0.5rem 5rem;
+}
+
+.main-nav{
+    display: flex;
+    width: 50rem;
+    justify-content: space-around;
+    margin-left: 120rem;
+}
+
+nav a{
+    text-decoration: none;
+    color: white;
+}
+
+nav a:hover{
+    color:  #9e9999;
+}
+
+nav img{
+    width: 5rem;
+}
